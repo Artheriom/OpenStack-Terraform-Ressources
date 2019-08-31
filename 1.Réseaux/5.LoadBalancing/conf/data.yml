@@ -1,0 +1,24 @@
+#cloud-config
+yum_repos:
+  nginx: 
+    baseurl: "http://nginx.org/packages/mainline/centos/7/$basearch/"
+    name: "nginx repo"
+    enabled: true
+    gpgcheck: false
+packages:
+- nginx
+runcmd:
+- ["systemctl", "enable", "nginx"]
+- ["systemctl", "start", "nginx"]
+- ["chown", "-R", "centos:root", "/usr/share/nginx/html/"]
+write_files:
+- path: /usr/share/nginx/html/hello.html
+  content: |
+    coucou${id}
+users:
+- name: lambda
+  groups: sudo
+  sudo: ALL=(ALL) ALL
+  shell: /bin/bash
+  lock-passwd: false
+  passwd: $1$GwZT4duo$guq9frwju6IMrz5rBCxIH0
